@@ -186,11 +186,16 @@ public class DataManager {
                         iname = i.getIname(); // 몬스터가 가지고 있는 아이템의 이름
                         itemcode = i.getItemcode(); // 몬스터가 가지고 있는 아이템 코드
                         dmg = m.getDmg(); // 몬스터의 데미지
+                        int mhp = m.getHp();
                         int mexp = m.getExp(); // 선택한 몬스터의 exp
-
+                        int ydmg = you.getDmg();
                         int after = yhp - dmg; // 사냥후 유저의 hp
 
-                        if (hp < dmg) {// hp가 0 되는걸 방지
+                        if (ydmg < mhp) {// hp가 0 되는걸 방지
+                            System.out.println("몬스터가 너무 강합니다.");
+                        } else if(yhp < dmg){
+                            System.out.println("체력이 너무 적습니다.");
+                        }else if(ydmg > mhp){
                             int nowexp = yexp + mexp; // 사냥을 성공하면
                             udao.updateexp(nowexp, id);
                             bdao.updatebag(id, itemcode);
@@ -198,8 +203,8 @@ public class DataManager {
                             System.out.println("체력이 " + after + "만큼 남았습니다.");
                             System.out.println(iname + "을(를) 획득했습니다.");
                             System.out.println("경험치가 " + nowexp + "이(가) 되었습니다.");
-                        } else {
-                            System.out.println("몬스터가 너무 강합니다.");
+                        }else{
+
                         }
                     }else {
                         System.out.println("존재하지 않는 몬스터 입니다.");
