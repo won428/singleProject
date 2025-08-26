@@ -115,6 +115,14 @@ public class DataManager {
                         System.out.println("삭제에 실패하였습니다.");
                     }else if(cnt > 0){
                         System.out.println(deleteid + "의 정보를 모두 삭제하였습니다.");
+                        cnt = bdao.deleteall(deleteid);
+                        if(cnt == -1){
+                            System.out.println("보유 아이템 정보를 삭제하지 못하였습니다.");
+                        }else if(cnt > 0){
+                            System.out.println("보유 아이템 정보도 모두 삭제하였습니다.");
+                        }else{
+                            System.out.println("알수없는 오류");
+                        }
                     }else{
                         System.out.println("알수없는 오류");
                     }
