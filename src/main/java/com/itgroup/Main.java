@@ -22,7 +22,7 @@ public class Main {
                     dma.usermenu();
                     break;
                 case 2: // 회원가입하기
-
+                    dma.signup();
                     break;
                 case 3: // 전체유저 확인, 캐릭터 삭제, 캐릭터 생성, 아이템 생성, 몬스터 생성, 유저 강제종료
                     dma.mastermenu();

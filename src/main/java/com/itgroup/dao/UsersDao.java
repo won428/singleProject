@@ -70,7 +70,7 @@ public class UsersDao extends SuperDao{
                 Users user = new Users();
                 user.setId(rs.getString("id"));
                 user.setPassword(rs.getString("password"));
-                user.setName(rs.getString("id"));
+                user.setName(rs.getString("name"));
                 user.setHp(rs.getInt("hp"));
                 user.setExp(rs.getInt("exp"));
 
@@ -187,6 +187,70 @@ public class UsersDao extends SuperDao{
                 ex.printStackTrace();
             }
         }
+    }
+
+    public int signup(String id, String password, String name) {
+        int cnt = -1;
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        String sql = "insert into users(id,password,name)values(?,?,?)";
+        try {
+            conn = super.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1,id);
+            pstmt.setString(2,password);
+            pstmt.setString(3,name);
+            cnt = pstmt.executeUpdate();
+
+            conn.commit();
+            try {
+                conn.rollback();
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
+        }catch (Exception ex2){
+            ex2.printStackTrace();
+        }finally {
+            try {
+                if(pstmt != null){pstmt.close();}
+                if(conn != null){conn.close();}
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
+        }
+
+        return cnt;
+    }
+
+    public int deleteid(String deleteid) {
+        int cnt = -1;
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        String sql = "delete from users where id = ?";
+        try {
+            conn = super.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1,deleteid);
+            cnt = pstmt.executeUpdate();
+
+            conn.commit();
+        }catch (Exception ex){
+            try {
+                conn.rollback();
+            }catch (Exception ex2){
+                ex2.printStackTrace();
+            }
+        }finally {
+            try {
+                if(pstmt != null){pstmt.close();}
+                if(conn != null){conn.close();}
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
+        }
+
+
+        return cnt;
     }
 }
 

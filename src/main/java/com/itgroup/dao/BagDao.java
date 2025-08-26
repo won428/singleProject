@@ -73,4 +73,93 @@ public class BagDao extends SuperDao{
             }
         }
     }
+
+    public Bag selectitem(String dropitemname, String id) {
+        Bag b = new Bag();
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "select i.iname from bag b join item i on b.itemcode = i.itemcode where i.iname = '?' and b.id = '?'";
+        try {
+            conn = super.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1,dropitemname);
+            pstmt.setString(2,id);
+            rs = pstmt.executeQuery();
+            if(rs.next()){
+                b.setIname(rs.getString("iname"));
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }finally {
+            try {
+                if(rs != null){rs.close();}
+                if(pstmt != null){pstmt.close();}
+                if(conn != null){conn.close();}
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
+        }
+
+        return b;
+    }
+
+    public int deleteall(String id) {
+        int cnt = -1;
+        String sql = "delete from bag where id = ?";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        try {
+            conn = super.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1,id);
+            cnt = pstmt.executeUpdate();
+        }catch (Exception ex){
+            try {
+                conn.rollback();
+            }catch (Exception ex2){
+                ex2.printStackTrace();
+            }
+        }finally {
+            try {
+                if(pstmt != null){pstmt.close();}
+                if(conn != null){conn.close();}
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
+        }
+
+
+        return cnt;
+    }
+
+    /*public int deleteone(String dropitemname, String id) {     // sql 오류 사용안함 //
+        int cnt = -1;
+        String sql = "delete from bag b join item i on b.itemcod = i.itemcode where i.iname = ? and rownum = 1 and b.id = ?";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        try {
+            conn = super.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1,dropitemname);
+            pstmt.setString(2,id);
+            cnt = pstmt.executeUpdate();
+        }catch (Exception ex){
+            try {
+                conn.rollback();
+            }catch (Exception ex2){
+                ex2.printStackTrace();
+            }
+        }finally {
+            try {
+                if(pstmt != null){pstmt.close();}
+                if(conn != null){conn.close();}
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
+        }
+
+
+        return cnt;
+    }*/
 }

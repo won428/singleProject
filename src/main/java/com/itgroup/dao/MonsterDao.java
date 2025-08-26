@@ -159,6 +159,70 @@ public class MonsterDao extends SuperDao {
 
         return item;
     }
+
+    public List<Monster> allmonster() {
+        List<Monster> monsters = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "select * from monster";
+        try {
+            conn = super.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+            while (rs.next()){
+                Monster m = new Monster();
+                m.setMonstercode(rs.getInt("monstercode"));
+                m.setMname(rs.getString("mname"));
+                m.setHp(rs.getInt("hp"));
+                m.setItem(rs.getInt("item"));
+                m.setExp(rs.getInt("exp"));
+                m.setDmg(rs.getInt("dmg"));
+                monsters.add(m);
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }finally {
+            try {
+                if(rs != null){rs.close();};
+                if(pstmt != null){pstmt.close();};
+                if(conn != null){conn.close();};
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
+        }
+
+
+        return monsters;
+    }
+
+    public int deletemonster(int code) {
+        int cnt = -1;
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        String sql = "delete from monster where monstercode = ?";
+        try {
+            conn = super.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1,code);
+            cnt = pstmt.executeUpdate();
+
+        }catch (Exception ex){
+            try {
+                conn.rollback();
+            }catch (Exception ex2){
+                ex2.printStackTrace();
+            }
+        }finally {
+            try {
+
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
+        }
+
+        return cnt;
+    }
 }
 
 
