@@ -18,7 +18,7 @@ public class Main {
                     System.out.println("프로그램을 종료합니다");
                     System.exit(0);
                     break;
-                case 1: // 접속 후 행동 메소드 : 아이디로 접속 > 접속한 아이디의 정보 출력 > 메뉴선택 > 사냥, 판매, 가방확인, 판매, 캐릭터 삭제, 나가기
+                case 1: // 접속 후 행동 메소드 : 아이디로 접속 > 접속한 아이디의 정보 출력 > 메뉴선택 > 캐릭터 정보 확인, 사냥, 가방확인, 나가기
                     dma.usermenu();
                     break;
                 case 2: // 회원가입하기
