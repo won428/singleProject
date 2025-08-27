@@ -89,6 +89,7 @@ cnt = pstmt.executeUpdate();
             pstmt.setInt(1,code);
             cnt = pstmt.executeUpdate();
 
+            conn.commit();
         }catch (Exception ex){
             try {
                 conn.rollback();

@@ -252,5 +252,36 @@ public class UsersDao extends SuperDao{
 
         return cnt;
     }
+
+    public int updateid(String update, int updatenum, String updateID) {
+        int cnt = -1;
+        String sql = "update users set "+ update + "= ? where id = ?";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        try {
+            conn = super.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1,updatenum);
+            pstmt.setString(2,updateID);
+            cnt = pstmt.executeUpdate();
+            conn.commit();
+        }catch (Exception ex){
+            try {
+                conn.rollback();
+            }catch (Exception ex2){
+                ex2.printStackTrace();
+            }
+        }finally {
+            try {
+                if(pstmt != null){pstmt.close();}
+                if(conn != null){conn.close();}
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
+        }
+
+
+        return cnt;
+    }
 }
 

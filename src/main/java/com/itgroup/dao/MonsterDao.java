@@ -142,7 +142,7 @@ public class MonsterDao extends SuperDao {
                 item = new Item();
                 item.setIname(rs.getString("iname"));
                 item.setItemcode(rs.getInt("itemcode"));
-                item.setIname(rs.getString("iname"));
+                item.setPrice(rs.getInt("price"));
             }
 
         }catch (Exception ex){

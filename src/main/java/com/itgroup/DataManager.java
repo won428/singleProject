@@ -53,9 +53,9 @@ public class DataManager {
         }
         while(true){
             System.out.println("메뉴를 선택해주세요.");
-            System.out.println("0: 돌아가기, 1: 전체유저 확인, 2: 유저 생성, 3: 유저 삭제, 4: 아이템 생성, 5: 아이템 조회, 6: 몬스터 생성, 7: 몬스터 조회");
+            System.out.println("0: 돌아가기, 1: 전체유저 확인, 2: 유저 생성, 3: 유저 삭제, 4: 아이템 생성, 5: 아이템 조회, 6: 몬스터 생성, 7: 몬스터 조회, 8: 유저 정보 변경");
             int menu = scan.nextInt();
-            if(menu < 0 || menu > 7){
+            if(menu < 0 || menu > 8){
                 System.out.println("선택할수 없는 메뉴입니다.");
                 return false;
             }
@@ -246,8 +246,34 @@ public class DataManager {
                         System.out.println("잘못 입력하셨습니다.");
                         break;
                     }
+                case 8:
+                    System.out.println("정보를 변경하실 유저의 아이디를 입력하세요");
+                    String updateID = scan.next();
+                    Users u = udao.findid(updateID);
+                    if(u.getId() == null){
+                        System.out.println("없는 아이디 입니다.");
+                        break;
+                    }
+                    System.out.println("변경하실 정보를 선택해주세요.");
+                    String update = scan.next();
+                    if(update.equals("hp") || update.equals("exp") || update.equals("dmg") || update.equals("name")){
+                        cnt = -1;
+                        System.out.println("변경하실 수치를 입력해주세요.");
+                        int updatenum = scan.nextInt();
+                        cnt = udao.updateid(update,updatenum,updateID);
+                        if(cnt == -1){
+                            System.out.println("옵션 변경에 실패하였습니다.");
+                        }else if(cnt > 0){
+                            String message = u.getName() + "님의 " + update + " 옵션을 " + + updatenum + "으로 변경하였습니다,";
+                            System.out.println(message);
+                        }else{
+                            System.out.println("알수없는 오류");
+                        }
 
-
+                    }else{
+                        System.out.println("변경할수 없는 옵션입니다.");
+                        break;
+                    }
             }
         }
     }
@@ -282,7 +308,13 @@ public class DataManager {
                     return false;
                 case 1:
                     Users you = udao.findid(id);
-                    System.out.println(you);
+                    id = you.getId();
+                    name = you.getName();
+                    hp = you.getHp();
+                    exp = you.getExp();
+                    dmg = you.getDmg();
+                    String message = "id: " + id + ", 이름: " + name + ", 체력: " + hp + ", 경험치: " + exp + ", 데미지: " + dmg;
+                    System.out.println(message);
                     break;
                 case 2:
                     List<Bag> bags = bdao.findbag(id);
