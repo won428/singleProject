@@ -43,7 +43,7 @@ public class DataManager {
     }
 
     //관리자 전체 메뉴 호출(전체유저 확인, 캐릭터 삭제, 캐릭터 생성, 아이템 생성, 몬스터 생성)
-    public boolean mastermenu() {
+    public void mastermenu() {
 
         System.out.println("관리자 메뉴를 실행합니다.");
         System.out.println("관리자 비밀번호를 입력해주세요");
@@ -51,7 +51,7 @@ public class DataManager {
         String input_password = scan.next();
         if(!admin_password.equals(input_password)){
             System.out.println("비밀번호가 틀렸습니다.");
-            return false;
+            return;
         }
         while(true){
             System.out.println("메뉴를 선택해주세요.");
@@ -62,11 +62,12 @@ public class DataManager {
             int menu = scan.nextInt();
             if(menu < 0 || menu > 8){
                 System.out.println("선택할수 없는 메뉴입니다.");
+                continue;
             }
             switch (menu){
                 case 0:
                     System.out.println("관리자 메뉴를 종료합니다.");
-                    return false;
+                    return;
                 case 1:
                     List<Users> users = udao.checkusers();
                     if(users.size() == 0){
@@ -260,7 +261,7 @@ public class DataManager {
                     }
                     System.out.println("변경하실 정보를 선택해주세요.");
                     String update = scan.next();
-                    if(update.equals("hp") || update.equals("exp") || update.equals("dmg") || update.equals("name")){
+                    if(update.equals("hp") || update.equals("exp") || update.equals("dmg") ||update.equals("lv")){
                         cnt = -1;
                         System.out.println("변경하실 수치를 입력해주세요.");
                         int updatenum = scan.nextInt();
@@ -268,7 +269,7 @@ public class DataManager {
                         if(cnt == -1){
                             System.out.println("옵션 변경에 실패하였습니다.");
                         }else if(cnt > 0){
-                            String message = u.getName() + "님의 " + update + " 옵션을 " + + updatenum + "으로 변경하였습니다,";
+                            String message = u.getName() + "님의 " + update + " 옵션을 "+ updatenum + "으로 변경하였습니다,";
                             System.out.println(message);
                         }else{
                             System.out.println("알수없는 오류");
@@ -283,19 +284,19 @@ public class DataManager {
     }
 
 
-    public boolean usermenu() {
+    public void usermenu() {
         System.out.println("접속할 id를 입력 해주세요.");
         id = scan.next();
         Users u = udao.findid(id);
         if (!id.equals(u.getId())) {
             System.out.println("존재하지 않는 아이디 입니다.");
-            return false;
+            return;
         }
         System.out.println("비밀번호를 입력해주세요.");
         String input_password = scan.next();
         if (!input_password.equals(u.getPassword())) {
             System.out.println("비밀번호가 틀렸습니다.");
-            return false;
+            return;
         }
         System.out.println(u.getName() + "님, 접속을 환영합니다! ");
         while (true) {
@@ -304,12 +305,12 @@ public class DataManager {
             int menu = scan.nextInt();
             if (menu < 0 || menu > 4) {
                 System.out.println("선택할수 없는 메뉴입니다.");
-                break;
+                continue;
             }
             switch (menu) {
                 case 0:
                     System.out.println("접속을 종료합니다.");
-                    return false;
+                    return;
                 case 1:
                     Users you = udao.findid(id);
                     id = you.getId();
@@ -449,7 +450,7 @@ public class DataManager {
                         cnt2 = bdao.deleteall(id);
                         if(cnt == -1 || cnt2 == -1){
                             System.out.println("알수없는 오류");
-                        }else if(cnt > 0 && cnt2 > 0){
+                        }else if(cnt >= 0 && cnt2 >= 0){
                             System.out.println("레벨이 " + downlv + "으로 하락하였습니다.");
                             System.out.println("아이템을 잃었습니다.");
                         }else {
@@ -462,7 +463,7 @@ public class DataManager {
                             cnt2 = udao.updatelv(id,100,0,20,1);
                             if(cnt == -1 || cnt2 == -1){
                                 System.out.println("알수없는 오류");
-                            }else if(cnt > 0 && cnt2 > 0){
+                            }else if(cnt >= 0 && cnt2 >= 0){
                                 System.out.println("보유아이템이 초기화 되고 레벨이 1이 되었습니다.");
                             }
                         }
@@ -519,7 +520,7 @@ public class DataManager {
             }
         }
 
-        return true;
+
     }
 
     public void signup() {
@@ -527,6 +528,13 @@ public class DataManager {
         System.out.println("캐릭터 생성을 시작합니다!");
         System.out.println("사용하실 아이디를 입력해주세요.");
         id = scan.next();
+
+        Users u =udao.findid(id);
+        if(u != null && id.equals(u.getId())){
+            System.out.println("중복된 아이디 입니다.");
+            return;
+        }
+
         System.out.println("비밀번호를 입력해주세요.");
         password = scan.next();
         System.out.println("사용하실 이름을 입력해주세요.");
