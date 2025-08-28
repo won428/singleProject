@@ -50,7 +50,7 @@ cnt = pstmt.executeUpdate();
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String sql = "select * from item";
+        String sql = "select * from item order by itemcode asc";
         try {
             conn = super.getConnection();
             pstmt = conn.prepareStatement(sql);

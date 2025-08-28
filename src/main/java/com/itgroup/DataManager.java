@@ -55,11 +55,13 @@ public class DataManager {
         }
         while(true){
             System.out.println("메뉴를 선택해주세요.");
-            System.out.println("0: 돌아가기, 1: 전체유저 확인, 2: 유저 생성, 3: 유저 삭제, 4: 아이템 생성, 5: 아이템 조회, 6: 몬스터 생성, 7: 몬스터 조회, 8: 유저 정보 변경");
+            System.out.println("--------------------------관리자 메뉴------------------------------");
+            System.out.println("[0.돌아가기] [1.전체유저 확인] [2.유저 생성] [3.유저 삭제] [4.아이템 생성]");
+            System.out.println("[5.아이템 조회] [6.몬스터 생성] [7.몬스터 조회] [8.유저 정보 변경]");
+            System.out.println("-----------------------------------------------------------------");
             int menu = scan.nextInt();
             if(menu < 0 || menu > 8){
                 System.out.println("선택할수 없는 메뉴입니다.");
-                return false;
             }
             switch (menu){
                 case 0:
@@ -159,7 +161,7 @@ public class DataManager {
                        String message = "이름: " + iname + ", 가격: " + price + ", 아이템코드: " + itemcode;
                         System.out.println(message);
                     }
-                    System.out.println("0: 돌아가기, 1: 아이템 삭제");
+                    System.out.println("[0.돌아가기] [1.아이템 삭제]");
                     int choice = scan.nextInt();
                     if(choice < 0 || choice > 1){
                         System.out.println("없는 메뉴 입니다.");
@@ -224,7 +226,7 @@ public class DataManager {
                         String message = "이름: " + mname + ", hp: " + hp + ", 드랍 아이템: " + item + ", 경험치: " + exp + ", 데미지: " + dmg + ", 몬스터 코드: " + monstercode;
                         System.out.println(message);
                     }
-                    System.out.println("0: 돌아가기, 1: 몬스터 삭제");
+                    System.out.println("[0.돌아가기] [1.몬스터 삭제]");
                     choice = scan.nextInt();
                     if(choice < 0 || choice > 1){
                         System.out.println("없는 메뉴 입니다.");
@@ -298,7 +300,7 @@ public class DataManager {
         System.out.println(u.getName() + "님, 접속을 환영합니다! ");
         while (true) {
             System.out.println("메뉴를 선택해주세요.");
-            System.out.println("0: 돌아가기, 1: 캐릭터 정보 조회, 2: 인벤토리 조회, 3: 몬스터 사냥, 4: 레벨업");
+            System.out.println("[0.돌아가기] [1.캐릭터 정보 조회] [2.인벤토리 조회] [3.몬스터 사냥] [4.레벨업]");
             int menu = scan.nextInt();
             if (menu < 0 || menu > 4) {
                 System.out.println("선택할수 없는 메뉴입니다.");
@@ -332,12 +334,12 @@ public class DataManager {
                         int count = bag.getCount();
                         System.out.println(iname + ", " + count + "개");
                     }
-                    System.out.println("0: 돌아가기, 1: 인벤토리 정리 메뉴");
+                    System.out.println("[0.돌아가기] [1.인벤토리 정리 메뉴]");
                     int choice = scan.nextInt();
                     if (choice == 0) {
                         break;
                     } else if (choice == 1) {
-                        System.out.println("돌아가기: 0, 아이템 버리기: 1, 인벤토리 비우기: 2");
+                        System.out.println("[0.돌아가기] [1.아이템 버리기] [2.인벤토리 비우기]");
                         choice = scan.nextInt();
                         if(choice == 0){
                             break;
@@ -455,7 +457,7 @@ public class DataManager {
                         }
 
                         if(downlv < 1){
-                            System.out.println("레벨이 1미만으로 내려가면 캐릭터가 초기화 됩니다.");
+                            System.out.println("레벨이 1미만으로 내려가 캐릭터가 초기화 됩니다.");
                             cnt = bdao.deleteall(id);
                             cnt2 = udao.updatelv(id,100,0,20,1);
                             if(cnt == -1 || cnt2 == -1){
@@ -475,6 +477,7 @@ public class DataManager {
                     int lvup = u.getLv() + 1;
                     int nowlv = u.getLv() + 1;
                     System.out.println("레벨을 올리시겠습니까 ? 현재 레벨은 " + u.getLv() + "입니다");
+                    System.out.println("레벨업에는 일정량의 경험치가 필요합니다.");
                     System.out.println("돌아가시려면 0, 진행하시려면 1을 입력해주세요.");
                     int lvmenu = scan.nextInt();
                     if(lvmenu == 0){
