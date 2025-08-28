@@ -11,6 +11,7 @@ import com.itgroup.dao.UsersDao;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 public class DataManager {
     Scanner scan = new Scanner(System.in);
@@ -31,6 +32,7 @@ public class DataManager {
     private int hp; // 유저 hp default 100
     private int exp; // 유저 경험치 default 0
     private int dmg;
+    private int lv;
 
     public DataManager(){
 
@@ -296,9 +298,9 @@ public class DataManager {
         System.out.println(u.getName() + "님, 접속을 환영합니다! ");
         while (true) {
             System.out.println("메뉴를 선택해주세요.");
-            System.out.println("0: 돌아가기, 1: 캐릭터 정보 조회, 2: 인벤토리 조회, 3: 몬스터 사냥");
+            System.out.println("0: 돌아가기, 1: 캐릭터 정보 조회, 2: 인벤토리 조회, 3: 몬스터 사냥, 4: 레벨업");
             int menu = scan.nextInt();
-            if (menu < 0 || menu > 3) {
+            if (menu < 0 || menu > 4) {
                 System.out.println("선택할수 없는 메뉴입니다.");
                 break;
             }
@@ -313,11 +315,13 @@ public class DataManager {
                     hp = you.getHp();
                     exp = you.getExp();
                     dmg = you.getDmg();
-                    String message = "id: " + id + ", 이름: " + name + ", 체력: " + hp + ", 경험치: " + exp + ", 데미지: " + dmg;
+                    lv = you.getLv();
+
+                    String message = "id: " + id + ", 이름: " + name +", 레벨: "+ lv + ", 체력: " + hp + ", 경험치: " + exp + ", 데미지: " + dmg;
                     System.out.println(message);
                     break;
                 case 2:
-                    List<Bag> bags = bdao.findbag(id);
+                    Set<Bag> bags = bdao.findbag(id);
                     if (bags.size() == 0) {
                         System.out.println("보유한 아이템이 없습니다.");
                         break;
@@ -325,24 +329,61 @@ public class DataManager {
                     System.out.println("보유아이템");
                     for (Bag bag : bags) {
                         String iname = bag.getIname();
-                        System.out.println(iname + " 1개");
+                        int count = bag.getCount();
+                        System.out.println(iname + ", " + count + "개");
                     }
-                    System.out.println("0: 돌아가기, 1:인벤토리 비우기");
+                    System.out.println("0: 돌아가기, 1: 인벤토리 정리 메뉴");
                     int choice = scan.nextInt();
                     if (choice == 0) {
                         break;
                     } else if (choice == 1) {
-                        int cnt = -1;
-                        cnt = bdao.deleteall(id);
-                        if (cnt == -1) {
-                            System.out.println("인벤토리를 비우지 못했습니다.");
-                        } else if (cnt > 0) {
-                            System.out.println("인벤토리를 비웠습니다.");
-                        } else {
-                            System.out.println("알수없는 오류");
-                        }
+                        System.out.println("돌아가기: 0, 아이템 버리기: 1, 인벤토리 비우기: 2");
+                        choice = scan.nextInt();
+                        if(choice == 0){
+                            break;
+                        }else if(choice == 1){
+                            System.out.println("버릴 아이템 이름을 입력해주세요.");
+                            String deleteitemname = scan.next();
+                            int cnt = bdao.checkitem(deleteitemname, id);
+                            if(cnt != 1){
+                                System.out.println("존재하지 않는 아이템입니다.");
+                                break;
+                            }else if(cnt == 1){
+                                cnt = -1;
+                                Item i = bdao.changecodename(deleteitemname);
+                                System.out.println("몇개 버리시겠습니까?");
+                                int itemnum = scan.nextInt();
+                                cnt = bdao.deleteitems(id,i.getItemcode(),itemnum);
+                                if(cnt == -1){
+                                    System.out.println("아이템 버리기에 실패하였습니다.");
+                                    break;
+                                }else if(cnt > 0){
+                                    System.out.println(deleteitemname + "을(를) " + itemnum + "개 버렸습니다.");
+                                    break;
+                                }else{
+                                    System.out.println("알수없는 오류");
+                                    break;
+                                }
+                            }else {
+                                System.out.println("알수없는 오류");
+                                break;
+                            }
+                        }else if(choice == 2) {
+                            int cnt = -1;
+                            cnt = bdao.deleteall(id);
+                            if (cnt == -1) {
+                                System.out.println("인벤토리를 비우지 못했습니다.");
+                            } else if (cnt > 0) {
+                                System.out.println("인벤토리를 비웠습니다.");
+                            } else {
+                                System.out.println("알수없는 오류");
+                            }
 
-                        break;
+                            break;
+                        }else{
+                            System.out.println("입력할수 없는 값입니다.");
+                            break;
+                        }
                     }
 
                 case 3:
@@ -377,11 +418,9 @@ public class DataManager {
                         int ydmg = you.getDmg();
                         int after = yhp - dmg; // 사냥후 유저의 hp
 
-                        if (ydmg < mhp) {// hp가 0 되는걸 방지
+                        if (ydmg < mhp) {
                             System.out.println("몬스터가 너무 강합니다.");
-                        } else if (yhp < dmg) {
-                            System.out.println("체력이 너무 적습니다.");
-                        } else if (ydmg > mhp) {
+                        }  else if (ydmg > mhp) {
                             int nowexp = yexp + mexp; // 사냥을 성공하면
                             udao.updateexp(nowexp, id);
                             bdao.updatebag(id, itemcode);
@@ -395,10 +434,88 @@ public class DataManager {
                     } else {
                         System.out.println("존재하지 않는 몬스터 입니다.");
                     }
-                    break;
+                    Users y = udao.findid(id);
+                    if(y.getHp() <= 0){
+                        System.out.println("hp가 0이 되어 레벨이 하락합니다.");
+                        int downlv = y.getLv() - 1;
+                        int downhp = 100 * downlv;
+                        int downexp = y.getExp() - m.getExp();
+                        int downdmg = 20 * downlv;
+                        int cnt = -1;
+                        int cnt2 = -2;
+                        cnt  = udao.updatelv(id,downhp,downexp,downdmg,downlv);
+                        cnt2 = bdao.deleteall(id);
+                        if(cnt == -1 || cnt2 == -1){
+                            System.out.println("알수없는 오류");
+                        }else if(cnt > 0 && cnt2 > 0){
+                            System.out.println("레벨이 " + downlv + "으로 하락하였습니다.");
+                            System.out.println("아이템을 잃었습니다.");
+                        }else {
+                            System.out.println("알수없는 오류");
+                        }
 
+                        if(downlv < 1){
+                            System.out.println("레벨이 1미만으로 내려가면 캐릭터가 초기화 됩니다.");
+                            cnt = bdao.deleteall(id);
+                            cnt2 = udao.updatelv(id,100,0,20,1);
+                            if(cnt == -1 || cnt2 == -1){
+                                System.out.println("알수없는 오류");
+                            }else if(cnt > 0 && cnt2 > 0){
+                                System.out.println("보유아이템이 초기화 되고 레벨이 1이 되었습니다.");
+                            }
+                        }
+                    }
+                    break;
+                case 4:
+                    u = udao.findid(id);
+                    int needexp = 50*u.getLv();
+                    int lvhp = 100*(u.getLv()+1);
+                    int lvexp = u.getExp() - needexp;
+                    int lvdmg = 20*(u.getLv()+1);
+                    int lvup = u.getLv() + 1;
+                    int nowlv = u.getLv() + 1;
+                    System.out.println("레벨을 올리시겠습니까 ? 현재 레벨은 " + u.getLv() + "입니다");
+                    System.out.println("돌아가시려면 0, 진행하시려면 1을 입력해주세요.");
+                    int lvmenu = scan.nextInt();
+                    if(lvmenu == 0){
+                        break;
+                    }else if(lvmenu == 1) {
+                        if (u.getLv() > 0) {
+                            System.out.println("레벨업에 필요한 경험치는 " + needexp + "입니다. 레벨업 하시겠습니까?");
+                            System.out.println("돌아가시려면 0, 진행하시려면 1을 입력해주세요.");
+                            lvmenu = scan.nextInt();
+                            if(u.getExp() < needexp){
+                                System.out.println("경험치가 부족합니다.");
+                                break;
+                            }
+
+                            if (lvmenu == 0){
+                                break;
+                            }else if(lvmenu == 1){
+                                int cnt = udao.updatelv(id,lvhp,lvexp,lvdmg,lvup);
+                                if (cnt == -1){
+                                    System.out.println("레벨업에 실패하였습니다.");
+                                    break;
+                                }else if(cnt == 1){
+                                    System.out.println("레벨 " + nowlv + "가 되었습니다! 축하드립니다.");
+                                    break;
+                                }else{
+                                    System.out.println("레벨업에 실패하였습니다.");
+                                    break;
+                                }
+                            }else{
+                                System.out.println("지정 범위내에서 입력해주세요.");
+                                break;
+                            }
+                        }else{
+                            System.out.println("아직 구현되지 않은 레벨입니다.");
+                        }
+                    }
+
+                    break;
             }
         }
+
         return true;
     }
 

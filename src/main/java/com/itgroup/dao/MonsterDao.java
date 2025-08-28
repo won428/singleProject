@@ -57,7 +57,7 @@ public class MonsterDao extends SuperDao {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String sql = "select * from monster";
+        String sql = "select * from monster order by monstercode ASC";
         try {
             conn = super.getConnection();
             pstmt = conn.prepareStatement(sql);

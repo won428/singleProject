@@ -113,6 +113,7 @@ public class UsersDao extends SuperDao{
             user.setHp(rs.getInt("hp"));
             user.setExp(rs.getInt("exp"));
             user.setDmg(rs.getInt("dmg"));
+            user.setLv(rs.getInt("lv"));
             }
 
         }catch (Exception ex){
@@ -265,6 +266,39 @@ public class UsersDao extends SuperDao{
             pstmt.setString(2,updateID);
             cnt = pstmt.executeUpdate();
             conn.commit();
+        }catch (Exception ex){
+            try {
+                conn.rollback();
+            }catch (Exception ex2){
+                ex2.printStackTrace();
+            }
+        }finally {
+            try {
+                if(pstmt != null){pstmt.close();}
+                if(conn != null){conn.close();}
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
+        }
+
+
+        return cnt;
+    }
+
+    public int updatelv(String id, int lvhp, int lvexp, int lvdmg, int lvup) {
+        int cnt = -1;
+        String sql = "update users set hp = ?, exp = ?, dmg = ?, lv = ? where id = ? ";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        try {
+            conn = super.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1,lvhp);
+            pstmt.setInt(2,lvexp);
+            pstmt.setInt(3,lvdmg);
+            pstmt.setInt(4,lvup);
+            pstmt.setString(5,id);
+            cnt =pstmt.executeUpdate();
         }catch (Exception ex){
             try {
                 conn.rollback();

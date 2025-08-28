@@ -7,15 +7,17 @@ public class Users {
     private int hp; // 유저 hp default 100
     private int exp; // 유저 경험치 default 0
     private int dmg; //  유저 데미지 default 1;
+    private int lv; // 유저 레벨 default 1;
 
 
-    public Users(String id, String password, String name, int hp, int exp, int dmg) {
+    public Users(String id, String password, String name, int hp, int exp, int dmg, int lv) {
         this.id = id;
         this.password = password;
         this.name = name;
         this.hp = hp;
         this.exp = exp;
         this.dmg = dmg;
+        this.lv = lv;
 
     }
 
@@ -32,6 +34,14 @@ public class Users {
 
     public String getId() {
         return id;
+    }
+
+    public int getLv() {
+        return lv;
+    }
+
+    public void setLv(int lv) {
+        this.lv = lv;
     }
 
     public void setId(String id) {
