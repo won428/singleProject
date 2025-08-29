@@ -15,11 +15,11 @@ public class UsersDao extends SuperDao{
 
 
 
-    public int createuser(String id, String password, String name, int hp,  int exp, int dmg){
+    public int createuser(String id, String password, String name, int hp,  int exp, int dmg, int lv){
         int cnt = -1;
         Connection conn = null;
         PreparedStatement pstmt = null;
-        String sql = "insert into users values(?,?,?,?,?,?)";
+        String sql = "insert into users values(?,?,?,?,?,?,?)";
         try {
             conn = super.getConnection();
             pstmt = conn.prepareStatement(sql);
@@ -29,6 +29,7 @@ public class UsersDao extends SuperDao{
             pstmt.setInt(4,hp);
             pstmt.setInt(5,exp);
             pstmt.setInt(6,dmg);
+            pstmt.setInt(7,lv);
             cnt = pstmt.executeUpdate();
 
             conn.commit();
@@ -73,6 +74,8 @@ public class UsersDao extends SuperDao{
                 user.setName(rs.getString("name"));
                 user.setHp(rs.getInt("hp"));
                 user.setExp(rs.getInt("exp"));
+                user.setDmg(rs.getInt("dmg"));
+                user.setLv(rs.getInt("lv"));
 
 
                 users.add(user);
@@ -299,6 +302,8 @@ public class UsersDao extends SuperDao{
             pstmt.setInt(4,lvup);
             pstmt.setString(5,id);
             cnt =pstmt.executeUpdate();
+
+            conn.commit();
         }catch (Exception ex){
             try {
                 conn.rollback();

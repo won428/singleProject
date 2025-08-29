@@ -81,8 +81,13 @@ public class DataManager {
                             hp = user.getHp();
                             exp = user.getExp();
                             dmg = user.getDmg();
-                            String message = "id: " + id + ",password: " + password + ",name: " + name + ",hp: " + hp + ",exp: " + exp + ",dmg: " + dmg;
+                            lv = user.getLv();
+                            String message = "id: " + id + ", password: " + password ;
+                            String message2 ="name: " + name + ", lv: " + lv + ", hp: " + hp + ", exp: " + exp + ", dmg: " + dmg;
+                            System.out.println("---------------------------");
                             System.out.println(message);
+                            System.out.println(message2);
+                            System.out.println("---------------------------");
                         }
                     }
                     break;
@@ -100,7 +105,9 @@ public class DataManager {
                     exp = scan.nextInt();
                     System.out.println("dmg를 입력하세요");
                     dmg = scan.nextInt();
-                    cnt = udao.createuser(id,password,name,hp,exp,dmg);
+                    System.out.println("lv를 입력하세요");
+                    lv = scan.nextInt();
+                    cnt = udao.createuser(id,password,name,hp,exp,dmg,lv);
 
                     if(cnt == -1){
                         System.out.println("유저 생성에 실패 했습니다.");
@@ -125,6 +132,8 @@ public class DataManager {
                             System.out.println("보유 아이템 정보를 삭제하지 못하였습니다.");
                         }else if(cnt > 0){
                             System.out.println("보유 아이템 정보도 모두 삭제하였습니다.");
+                        }else if(cnt == 0){
+                            System.out.println(id + "님은 보유한 아이템이 없습니다.");
                         }else{
                             System.out.println("알수없는 오류");
                         }
@@ -388,6 +397,7 @@ public class DataManager {
                             break;
                         }
                     }
+                    break;
 
                 case 3:
                     System.out.println("사냥할 몬스터를 선택하세요");
@@ -407,7 +417,10 @@ public class DataManager {
                     monstercode = scan.nextInt(); // 위 보기를 보고 몬스터 선택, 몬스터 번호는 몬스터 코드와 동일하게 설정
 
                     Monster m = mdao.checkmonsterOne(monstercode); // 몬스터 코드 매개변수로 몬스터 객체 생성
-                    if (m != null) { // 없는 몬스터일경우 널 방지로 if구문 넣기
+                    if(m == null){
+                        System.out.println("존재하지 않는 몬스터 입니다.");
+                        break;
+                    }else if (m != null) { // 없는 몬스터일경우 널 방지로 if구문 넣기
 
                         int yhp = you.getHp(); // 현재 접속중인 유저의 hp
                         int yexp = you.getExp(); // 현재 접속중인 유저의 exp

@@ -139,12 +139,16 @@ public class BagDao extends SuperDao{
         String sql = "select 1 from item i join bag b on i.itemcode = b.itemcode where i.iname = ? and b.id = ? group by b.id";
         Connection conn = null;
         PreparedStatement pstmt = null;
+        ResultSet rs = null;
         try {
             conn = super.getConnection();
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, deleteitemname);
             pstmt.setString(2,id);
-            cnt = pstmt.executeUpdate();
+            rs = pstmt.executeQuery();
+            while (rs.next()){
+                cnt = rs.getInt("1");
+            }
         } catch (Exception ex) {
             try {
                 conn.rollback();
